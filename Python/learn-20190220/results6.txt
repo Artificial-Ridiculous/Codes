@@ -1,0 +1,4 @@
+﻿刘备's score is 200
+关羽's score is 205
+张飞's score is 376
+诸葛亮's score is 100
