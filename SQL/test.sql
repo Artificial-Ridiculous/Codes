@@ -1,6 +1,4 @@
 use test;
-select if((select count( distinct id) from a) >2 
-,
-select 8
-,
-select 9)
+-- select * from Orders;
+select convert(1/3,decimal(15,4));
+-- select ifnull(3/0,3);
