@@ -12,8 +12,8 @@ class Solution:
 
 if __name__ == '__main__':
     solution = Solution()
-    #A = [3,2,1,2,1,7]
-    A = [1,2,2]
+    A = [3,2,1,2,1,7]
+    #A = [1,2,2]
     ans = solution.minIncrementForUnique(A)
     print(ans)
     
