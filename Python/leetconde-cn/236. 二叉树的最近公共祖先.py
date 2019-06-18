@@ -7,11 +7,23 @@ class TreeNode:
 
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
-        dic = {root:None}
-        stack = []
-        def bfs(self,root):
-            while(root or stack):
-                while(root):
-                    if root.left : dic[root.left]=root
-                    if root.right : dic[root.right]=root
-                
+        dic = self.bfs(root)
+        while(p):
+            if dic.
+
+    def bfs(self,root:TreeNode ) -> dict :
+        p = root
+        queue = []
+        if p: 
+            dic = {p:None}
+            queue.append(p)
+        while(queue):
+            p = queue.pop(0)
+            if p.left: 
+                dic[p.left]=p
+                queue.append(p.left)
+            if p.right: 
+                dic[p.right]=p
+                queue.append(p.right)
+        print(dic)
+        return dic
