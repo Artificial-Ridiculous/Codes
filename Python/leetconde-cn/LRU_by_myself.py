@@ -7,7 +7,7 @@ class DLinkedListNode:
 
 class LRUCache:
     def __init__(self, capacity: int):
-        self.cache = {}  # 字典 保证get为O(1)
+        self.dic = {}  # 字典 保证get为O(1)
         self.head = DLinkedListNode(0)  # 双向链表
         self.tail = DLinkedListNode(0)  # 保证Put为O(1)
         self.head.next=self.tail
@@ -36,7 +36,7 @@ class LRUCache:
         # node.prev = None
 
     def get(self, key: int) -> int:
-        node = self.cache.get(key)
+        node = self.dic.get(key)
         if node:
             self.move_to_head(node)
             return self.head.next.val
@@ -44,23 +44,24 @@ class LRUCache:
             return -1
 
     def put(self, key: int, value: int) -> None:
-        node = self.cache.get(key)
-        if node: # 已经有这个key 更新value 更新链表位置
-            self.cache[key].val = value
+        node = self.dic.get(key)
+        if node:  # 已经有这个key 更新value 更新链表位置
+            self.dic[key].val = value
             self.move_to_head(node)
-        elif self.len < self.capacity:
+        elif self.len < self.capacity:  # 没有key 新增
             node = DLinkedListNode(value)
             node.key = key
             self.add_node(node)
-            self.cache[key] = node
+            self.dic[key] = node
             self.len+=1
-        else:
+        else:  # 没有key 但是LRU已满  需要新增并移除最后一个节点
             node = DLinkedListNode(value)
             node.key = key
             self.add_node(node)
-            self.cache[key] = node
+            self.dic[key] = node
 
-            del self.cache[self.tail.prev.key]
+            del self.dic[self.tail.prev.key]
+            self.remove_node(self.tail.prev)
 
 
         # if self.len < self.capacity:
