@@ -9,6 +9,7 @@ class LRUCache():
     def _add_node(self, node):
         """
         Always add the new node right after head.
+        总是在head右边加入新结点
         """
         node.prev = self.head
         node.next = self.head.next
@@ -19,6 +20,7 @@ class LRUCache():
     def _remove_node(self, node):
         """
         Remove an existing node from the linked list.
+        从链表中移除一个存在的节点
         """
         prev = node.prev
         new = node.next
@@ -29,6 +31,7 @@ class LRUCache():
     def _move_to_head(self, node):
         """
         Move certain node in between to the head.
+        将中间的某个节点移动到head
         """
         self._remove_node(node)
         self._add_node(node)
@@ -36,6 +39,7 @@ class LRUCache():
     def _pop_tail(self):
         """
         Pop the current tail.
+        弹出当前的tail
         """
         res = self.tail.prev
         self._remove_node(res)
