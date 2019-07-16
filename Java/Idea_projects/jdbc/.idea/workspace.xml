@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0c44d8d6-5886-4adc-8619-28a589379efd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hiveSink/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hiveSink/src/main/java/cocobolo/HiveSink.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hiveSink/src/main/java/cocobolo/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hiveSink/src/main/java/cocobolo/MyKafkaProducer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hiveSink/src/main/java/cocobolo/Transaction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hiveSink/src/main/resources/log4j.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jdbcMysqlTest/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jdbcMysqlTest/src/main/java/top/cocobolo/ExecuteUpdate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jdbcMysqlTest/src/main/java/top/cocobolo/Transaction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jdbcMysqlTest/src/main/resources/log4j.properties" afterDir="false" />
-    </list>
+    <list default="true" id="0c44d8d6-5886-4adc-8619-28a589379efd" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path="$PROJECT_DIR$/jdbcMysqlTest/target/" />
@@ -94,7 +80,7 @@
         <entry file="file://$PROJECT_DIR$/jdbc.iml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="19">
-              <caret line="1" column="19" lean-forward="true" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
+              <caret line="1" column="25" selection-start-line="1" selection-start-column="25" selection-end-line="1" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -296,12 +282,20 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1563263330768</updated>
-      <workItem from="1563263333565" duration="771000" />
+      <workItem from="1563263333565" duration="1105000" />
     </task>
+    <task id="LOCAL-00001" summary="create my idea projects">
+      <created>1563264204406</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1563264204406</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="771000" />
+    <option name="totallyTimeSpent" value="1105000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
@@ -310,11 +304,11 @@
       <window_info id="Designer" />
       <window_info id="UI Designer" />
       <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22312045" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22312045" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" />
-      <window_info anchor="bottom" id="Version Control" />
+      <window_info active="true" anchor="bottom" id="Version Control" visible="true" weight="0.3285968" />
       <window_info anchor="bottom" id="Terminal" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -332,6 +326,36 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="create my idea projects" />
+    <option name="LAST_COMMIT_MESSAGE" value="create my idea projects" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/jdbcMysqlTest/pom.xml">
@@ -422,7 +446,7 @@
     <entry file="file://$PROJECT_DIR$/jdbc.iml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="19">
-          <caret line="1" column="19" lean-forward="true" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
+          <caret line="1" column="25" selection-start-line="1" selection-start-column="25" selection-end-line="1" selection-end-column="25" />
         </state>
       </provider>
     </entry>
