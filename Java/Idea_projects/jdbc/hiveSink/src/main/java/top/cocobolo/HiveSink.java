@@ -72,6 +72,5 @@ public class HiveSink extends RichSinkFunction<Transaction> {
     public static void main(String[] args) {
         getConnection();
     }
-
 }
 
