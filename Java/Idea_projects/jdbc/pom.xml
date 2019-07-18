@@ -11,6 +11,7 @@
     <modules>
         <module>hiveSink</module>
         <module>jdbcMysqlTest</module>
+        <module>multiThread</module>
     </modules>
 
 
