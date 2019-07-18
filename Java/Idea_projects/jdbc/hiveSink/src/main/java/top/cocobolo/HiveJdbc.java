@@ -75,20 +75,12 @@ public class HiveJdbc {
     }
 
     public static FileSystem getfileSystem() throws IOException, InterruptedException, URISyntaxException {
-        FileSystem fileSystem = null;
         // 获取一个具体的文件系统对象
         Configuration conf = new Configuration();
-        conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");  // 否则报java.io.IOException: No FileSystem for scheme: hdfs
-        fileSystem = FileSystem.get(
-                // 创建一下HDFS文件系统的访问路径，就是Hadoop配置文件中的core-sit.xml中的HDFS文件系统的所在机器
-                new URI("hdfs://192.168.229.129:9000"),
-                // 创建一个Hadoop的配置文件的类
-                conf,
-                // 就是Linux启动的用户名
-                "lz");
+        conf.set("fs.hdfs.impl","org.apache.hadoop.hdfs.DistributedFileSystem");
+        FileSystem fileSystem = FileSystem.get(new URI("hdfs://tf-ubuntu:9000"),conf,"lz");
         return fileSystem;
     }
-
 
 
     /**
@@ -96,15 +88,17 @@ public class HiveJdbc {
      * @param dst HDFS 路径
      */
     private static void loadData2Hive(String dst) {
-        String JDBC_DRIVER = "org.apache.hive.jdbc.HiveDriver";
-        String CONNECTION_URL = "jdbc:hive2://192.168.229.129:10000/test";
-        String username = "lz";
-        String password = "";
+//        String JDBC_DRIVER = "org.apache.hive.jdbc.HiveDriver";
+//        String CONNECTION_URL = "jdbc:hive2://192.168.229.129:10000/test";
+//        String username = "lz";
+//        String password = "";
         Connection con = null;
 
         try {
-            Class.forName(JDBC_DRIVER);
-            con = (Connection) DriverManager.getConnection(CONNECTION_URL,username,password);
+//            Class.forName(JDBC_DRIVER);
+//            con = (Connection) DriverManager.getConnection(CONNECTION_URL,username,password);
+
+            con = HiveSink.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = " load data inpath '"+dst+"' overwrite into table test ";
@@ -113,9 +107,7 @@ public class HiveJdbc {
             System.out.println("loadData到Hive表成功！");
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }finally {
+        } finally {
             // 关闭rs、ps和con
             if(con != null){
                 try {

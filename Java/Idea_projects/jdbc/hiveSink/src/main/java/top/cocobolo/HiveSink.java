@@ -53,7 +53,7 @@ public class HiveSink extends RichSinkFunction<Transaction> {
         //state.execute  用于未知的返回结果更复杂的情况
     }
 
-    private static Connection getConnection() {
+    public static Connection getConnection() {
         Connection conn = null;
         try {
             String jdbc = "org.apache.hive.jdbc.HiveDriver";

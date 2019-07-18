@@ -12,9 +12,8 @@ public class Chapter3 {
             String filename = "test";
 
             Configuration conf = new Configuration();
-            conf.set("fs.defaultFS","hdfs://192.168.229.129:9000");
             conf.set("fs.hdfs.impl","org.apache.hadoop.hdfs.DistributedFileSystem");
-            FileSystem fs = FileSystem.get(new URI("hdfs://192.168.229.129:9000"),conf,"lz");
+            FileSystem fs = FileSystem.get(new URI("hdfs://tf-ubuntu:9000"),conf,"lz");
             if(fs.exists(new Path(filename))){
                 System.out.println("文件存在");
             }else{
