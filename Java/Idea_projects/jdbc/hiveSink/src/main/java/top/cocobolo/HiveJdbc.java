@@ -5,6 +5,8 @@ package top.cocobolo;
  * @create 2019-07-17 16:35
  */
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,6 +18,9 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.DistributedFileSystem;
+
+
 /**
  * <p>Description: </p>
  * @author kangkaia
@@ -23,13 +28,13 @@ import org.apache.hadoop.fs.Path;
  */
 public class HiveJdbc {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
         List<List> argList = new ArrayList<>();  // argList = []
         List<String> arg = new ArrayList<>();  // arg = []
         arg.add("12345");  // arg = ["12345"]
         arg.add("m");  // arg = ["12345","m"]
         argList.add(arg);  // argList = [["12345","m"]]
-        arg = new ArrayList<>();  // arg = []
+        arg = new ArrayList<>() ;  // arg = []
         arg.add("54321");  // arg = ["54321"]
         arg.add("f");  // arg = ["54321","f"]
         argList.add(arg);  // argList = [["12345","m"], ["54321","f"]]
@@ -41,17 +46,18 @@ public class HiveJdbc {
 
     /**
      * 将数据插入hdfs中，用于load到hive表中，默认分隔符是"\001"
-     * @param dst
-     * @param argList
+     * @param dst HDFS 路径
+     * @param argList 待写入的List<List>
      * @throws IOException
      */
-    public static void createFile(String dst , List<List> argList) throws IOException{
-        Configuration conf = new Configuration();
-        FileSystem fs = FileSystem.get(conf);
+    private static void createFile(String dst, List<List> argList) throws IOException, URISyntaxException, InterruptedException {
+//        Configuration conf = new Configuration();
+//        FileSystem fs = FileSystem.get(conf);
+        FileSystem fs = getfileSystem();
         Path dstPath = new Path(dst); //目标路径
         //打开一个输出流
-        FSDataOutputStream outputStream = fs.create(dstPath);
-        StringBuffer sb = new StringBuffer();
+        FSDataOutputStream outputStream = fs.create(dstPath,true);
+        StringBuilder sb = new StringBuilder();
         for(List<String> arg:argList){
             for(String value:arg){
                 sb.append(value).append("\001");
@@ -67,11 +73,29 @@ public class HiveJdbc {
         System.out.println("文件创建成功！");
 
     }
+
+    public static FileSystem getfileSystem() throws IOException, InterruptedException, URISyntaxException {
+        FileSystem fileSystem = null;
+        // 获取一个具体的文件系统对象
+        Configuration conf = new Configuration();
+        conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");  // 否则报java.io.IOException: No FileSystem for scheme: hdfs
+        fileSystem = FileSystem.get(
+                // 创建一下HDFS文件系统的访问路径，就是Hadoop配置文件中的core-sit.xml中的HDFS文件系统的所在机器
+                new URI("hdfs://192.168.229.129:9000"),
+                // 创建一个Hadoop的配置文件的类
+                conf,
+                // 就是Linux启动的用户名
+                "lz");
+        return fileSystem;
+    }
+
+
+
     /**
      * 将HDFS文件load到hive表中
-     * @param dst
+     * @param dst HDFS 路径
      */
-    public static void loadData2Hive(String dst) {
+    private static void loadData2Hive(String dst) {
         String JDBC_DRIVER = "org.apache.hive.jdbc.HiveDriver";
         String CONNECTION_URL = "jdbc:hive2://192.168.229.129:10000/test";
         String username = "lz";
