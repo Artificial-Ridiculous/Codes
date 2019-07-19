@@ -26,7 +26,7 @@ import org.apache.hadoop.hdfs.DistributedFileSystem;
  * @author kangkaia
  * @date 2017年12月26日 下午1:42:24
  */
-public class HiveJdbc {
+public class Write_hdfs_load_hive {
 
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
         List<List> argList = new ArrayList<>();  // argList = []
@@ -51,21 +51,24 @@ public class HiveJdbc {
      * @throws IOException
      */
     private static void createFile(String dst, List<List> argList) throws IOException, URISyntaxException, InterruptedException {
-//        Configuration conf = new Configuration();
-//        FileSystem fs = FileSystem.get(conf);
-        FileSystem fs = getfileSystem();
+
+        FileSystem fs = GetConnection.getHDFSFileSystem();
         Path dstPath = new Path(dst); //目标路径
         //打开一个输出流
         FSDataOutputStream outputStream = fs.create(dstPath,true);
         StringBuilder sb = new StringBuilder();
+        String rowDelimiter = "\001";
+        int rowDelimiterLength = rowDelimiter.length();
+        String lineDelimiter = "\n";
+        int lineDilimiterLength = lineDelimiter.length();
         for(List<String> arg:argList){
             for(String value:arg){
-                sb.append(value).append("\001");
+                sb.append(value).append(rowDelimiter);
             }
-            sb.deleteCharAt(sb.length() - 4);//去掉最后一个分隔符
-            sb.append("\n");
+            sb.deleteCharAt(sb.length() - rowDelimiterLength);//去掉最后一个分隔符
+            sb.append(lineDelimiter);
         }
-        sb.deleteCharAt(sb.length() - 2);//去掉最后一个换行符
+        sb.deleteCharAt(sb.length() - lineDilimiterLength);//去掉最后一个换行符
         byte[] contents =  sb.toString().getBytes();
         outputStream.write(contents);
         outputStream.close();
@@ -74,13 +77,6 @@ public class HiveJdbc {
 
     }
 
-    public static FileSystem getfileSystem() throws IOException, InterruptedException, URISyntaxException {
-        // 获取一个具体的文件系统对象
-        Configuration conf = new Configuration();
-        conf.set("fs.hdfs.impl","org.apache.hadoop.hdfs.DistributedFileSystem");
-        FileSystem fileSystem = FileSystem.get(new URI("hdfs://tf-ubuntu:9000"),conf,"lz");
-        return fileSystem;
-    }
 
 
     /**
@@ -88,20 +84,16 @@ public class HiveJdbc {
      * @param dst HDFS 路径
      */
     private static void loadData2Hive(String dst) {
-//        String JDBC_DRIVER = "org.apache.hive.jdbc.HiveDriver";
-//        String CONNECTION_URL = "jdbc:hive2://192.168.229.129:10000/test";
-//        String username = "lz";
-//        String password = "";
         Connection con = null;
 
         try {
 //            Class.forName(JDBC_DRIVER);
 //            con = (Connection) DriverManager.getConnection(CONNECTION_URL,username,password);
 
-            con = HiveSink.getConnection();
+            con = GetConnection.getHiveConnection();
             Statement stmt = con.createStatement();
 
-            String sql = " load data inpath '"+dst+"' overwrite into table test ";
+            String sql = " load data inpath '"+dst+"' into table test ";
 
             stmt.execute(sql);
             System.out.println("loadData到Hive表成功！");

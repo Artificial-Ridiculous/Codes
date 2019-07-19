@@ -24,20 +24,12 @@ public class KafkaProduce {
         KafkaProducer producer = new KafkaProducer<String, String>(props);
 
         while(true) {
-            Integer transaction_id = (int)(1+Math.random()*(1000000000-1+1));
-            Integer card_number = (int)(1+Math.random()*(100000000-1+1));
-            Integer terminal_id = (int)(1+Math.random()*(10000000-1+1));
-            Timestamp transaction_time = new Timestamp(System.nanoTime());
-            Integer transaction_type = (int)(1+Math.random()*(8-1+1));
-            Float amount = new Random().nextFloat()*10000;
-
-            Transaction transaction = new Transaction(transaction_id,card_number,terminal_id,transaction_time,transaction_type,amount);
-
+            Transaction transaction = Transaction.getRandomTransaction();
             ProducerRecord record = new ProducerRecord<String, String>(topic, null, null, JSON.toJSONString(transaction));
             producer.send(record);
             String a = JSON.toJSONString(transaction);
             System.out.println("发送数据: " + a);
-            Thread.sleep(5000);
+            Thread.sleep(1000);
             producer.flush();
         }
     }

@@ -6,7 +6,7 @@ import org.apache.hadoop.fs.Path;
 
 import java.net.URI;
 
-public class Chapter3 {
+public class TestHDFS {
     public static void main(String[] args) {
         try {
             String filename = "test";
