@@ -1,6 +1,5 @@
 package top.cocobolo;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Random;
 
@@ -82,15 +81,21 @@ public class Transaction {
     }
 
     public static Transaction getRandomTransaction(){
-        Integer transaction_id = (int)(1+Math.random()*(1000000000-100000000+1));
-        Integer card_number = (int)(1+Math.random()*(100000000-10000000+1));
-        Integer terminal_id = (int)(1+Math.random()*(10000000-1000000+1));
+        Integer transaction_id = (int)(100000000+Math.random()*(1000000000-100000000+1));
+        Integer card_number = (int)(10000000+Math.random()*(100000000-10000000+1));
+        Integer terminal_id = (int)(1000000+Math.random()*(10000000-1000000+1));
         Timestamp transaction_time = new Timestamp(System.currentTimeMillis());
         Integer transaction_type = (int)(1+Math.random()*(8-1+1));
         Float amount = new Random().nextFloat()*10000;
 
         Transaction transaction = new Transaction(transaction_id,card_number,terminal_id,transaction_time,transaction_type,amount);
         return transaction;
+    }
+
+    public static void main(String[] args) {
+        for (int i = 0; i < 100; i++) {
+            System.out.println(100000000+(int)(Math.random()*(1000000000+1-100000000)));
+        }
     }
 }
 

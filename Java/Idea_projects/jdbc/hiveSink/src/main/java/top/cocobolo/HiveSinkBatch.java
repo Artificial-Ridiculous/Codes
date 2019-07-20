@@ -58,10 +58,10 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
         transactionArrayList.add(transaction);
         objectCounter += 1;
         System.out.println("invokeeeeeeeeeeeeeeeeeeeee and objectCounter = "+ objectCounter);
-        if(objectCounter >= 5){
+        if(objectCounter >= 20){
             uuid = UUID.randomUUID().toString().replaceAll("-", "");
             dst = "/hive/"+ uuid + ".txt";
-            System.out.println("oooooooooooooooooobjectCounter >= 10");
+            System.out.println("oooooooooooooooooobjectCounter >= 20");
             WriteToHDFS.writeToHDFS(transactionArrayList, hdfs, hiveConn, dst, dstPath, outputStream);
             NotifyHiveToLoad.load(dst, hiveConn);
             objectCounter = 0;

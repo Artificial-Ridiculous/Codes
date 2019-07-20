@@ -28,7 +28,7 @@ public class Main {
         )
             .setParallelism(1)
             .map(string -> JSON.parseObject(string, Transaction.class))
-            .addSink(new HiveSinkBatch()).setParallelism(1); //数据 sink 到 mysql
+            .addSink(new HiveSinkBatch()).setParallelism(2); //数据 sink 到 mysql
 
         env.execute("Flink add sink");
     }
