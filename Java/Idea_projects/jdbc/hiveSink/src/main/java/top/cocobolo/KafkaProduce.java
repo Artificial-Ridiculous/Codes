@@ -23,13 +23,13 @@ public class KafkaProduce {
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         KafkaProducer producer = new KafkaProducer<String, String>(props);
         int produceCounter = 0;
-        while(produceCounter <= 200) {
+        while(produceCounter <= 2000) {
             Transaction transaction = Transaction.getRandomTransaction();
             ProducerRecord record = new ProducerRecord<String, String>(topic, null, null, JSON.toJSONString(transaction));
             producer.send(record);
             String a = JSON.toJSONString(transaction);
             System.out.println("发送数据: " + a);
-            Thread.sleep(300);
+            Thread.sleep(30);
             producer.flush();
             produceCounter+=1;
         }

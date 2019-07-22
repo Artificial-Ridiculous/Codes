@@ -51,8 +51,8 @@ public class FooBar{
 
     public static void main(String[] args) {
         FooBar fb = new FooBar(5);
-        Thread t1 = new Thread(new printFoo(fb));
-        Thread t2 = new Thread(new printBar(fb));
+        Thread t1 = new Thread(new printFoo(fb),"线程t1");
+        Thread t2 = new Thread(new printBar(fb),"线程t2");
         t2.start();  // 注意不能是run()
         t1.start();  // 注意不能是run()
     }
@@ -70,7 +70,7 @@ class printFoo implements Runnable{
     @Override
     public void run() {
         try {
-            fb.foo(() -> System.out.print("Foo"));
+            fb.foo(() -> System.out.println(Thread.currentThread().getName()+": Foo"));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -87,7 +87,7 @@ class printBar implements Runnable{
     @Override
     public void run() {
         try {
-            fb.bar(() -> System.out.print("Bar"));
+            fb.bar(() -> System.out.println(Thread.currentThread().getName()+": Bar"));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

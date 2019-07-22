@@ -25,6 +25,10 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
     private Path dstPath;
     private FSDataOutputStream outputStream;
     private int objectCounter;
+    private int counterThreshold;
+    private long interval;
+    private long currentMilli;
+    private long startMilli;
     private ArrayList<Transaction> transactionArrayList;
 
 
@@ -36,6 +40,9 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
         hdfs = GetConnection.getHDFSFileSystem();
         objectCounter = 0;
         transactionArrayList = new ArrayList<Transaction>();
+        interval = 45 * 1000;  // 要么40秒
+        counterThreshold = 500;  // 要么batch数据达到500条
+        startMilli = System.currentTimeMillis();
     }
 
     @Override
@@ -54,17 +61,22 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
     }
 
     @Override
-    public void invoke(Transaction transaction, Context context) throws IOException, SQLException {
+    public void invoke(Transaction transaction, Context context) throws IOException, SQLException, InterruptedException {
         transactionArrayList.add(transaction);
         objectCounter += 1;
-        System.out.println("invokeeeeeeeeeeeeeeeeeeeee and objectCounter = "+ objectCounter);
-        if(objectCounter >= 20){
+        currentMilli = System.currentTimeMillis() - startMilli;
+        if(objectCounter >= counterThreshold || currentMilli >= interval ){
+            if (objectCounter >= counterThreshold){
+                System.out.println("触发batch写入 : " + objectCounter + "条数据");
+            } else{
+                System.out.println("触发batch写入 : " + currentMilli + "毫秒");
+            }
             uuid = UUID.randomUUID().toString().replaceAll("-", "");
             dst = "/hive/"+ uuid + ".txt";
-            System.out.println("oooooooooooooooooobjectCounter >= 20");
             WriteToHDFS.writeToHDFS(transactionArrayList, hdfs, hiveConn, dst, dstPath, outputStream);
             NotifyHiveToLoad.load(dst, hiveConn);
             objectCounter = 0;
+            startMilli = System.currentTimeMillis();
             transactionArrayList.clear();
         }
     }
