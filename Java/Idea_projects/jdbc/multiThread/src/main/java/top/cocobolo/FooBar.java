@@ -1,7 +1,5 @@
 package top.cocobolo;
 
-import java.util.function.IntConsumer;
-
 /**
  * @auther lz
  * @create 2019-07-17 11:05
@@ -10,42 +8,42 @@ import java.util.function.IntConsumer;
 public class FooBar{
     private int n;
     private boolean isFooed;
-    private Object lock;
+//    private Object lock;
 
-    public FooBar(int n) {
+    private FooBar(int n) {
         this.n = n;
         this.isFooed = false;
-        this.lock = new Object();
+//        this.lock = new Object();
     }
 
-    public void foo(Runnable printFoo) throws InterruptedException {
+    void foo(Runnable printFoo) throws InterruptedException {
 
         for (int i = 0; i < n; i++) {
 
             // printFoo.run() outputs "foo". Do not change or remove this line.
-            synchronized (lock) {
+            synchronized (this) {
                 while (isFooed) {
-                    lock.wait();
+                    this.wait();
                 }
                 printFoo.run();
                 isFooed = true;
-                lock.notifyAll();
+                this.notifyAll();
             }
         }
     }
 
-    public void bar(Runnable printBar) throws InterruptedException {
+    void bar(Runnable printBar) throws InterruptedException {
 
         for (int i = 0; i < n; i++) {
 
             // printBar.run() outputs "bar". Do not change or remove this line.
-            synchronized (lock) {
+            synchronized (this) {
                 while (!isFooed) {
-                    lock.wait();
+                    this.wait();
                 }
                 printBar.run();
                 isFooed = false;
-                lock.notifyAll();
+                this.notifyAll();
             }
         }
     }
@@ -63,9 +61,9 @@ public class FooBar{
 
 class printFoo implements Runnable{
 
-    FooBar fb ;
+    private FooBar fb ;
 
-    public printFoo(FooBar fb) {
+    printFoo(FooBar fb) {
         this.fb = fb;
     }
 
@@ -80,9 +78,9 @@ class printFoo implements Runnable{
 }
 
 class printBar implements Runnable{
-    FooBar fb;
+    private FooBar fb;
 
-    public printBar(FooBar fb) {
+    printBar(FooBar fb) {
         this.fb = fb;
     }
 
