@@ -8,9 +8,7 @@ import org.apache.hadoop.fs.Path;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @auther lz
@@ -18,18 +16,30 @@ import java.util.UUID;
  */
 
 public class HiveSinkBatch extends RichSinkFunction<Transaction> {
-    private Connection hiveConn;
-    private FileSystem hdfs;
-    private String uuid;
-    private String dst;
-    private Path dstPath;
-    private FSDataOutputStream outputStream;
-    private int objectCounter;
-    private int counterThreshold;
-    private long interval;
-    private long currentMilli;
-    private long startMilli;
-    private ArrayList<Transaction> transactionArrayList;
+    //全程只需要生成一次
+    static Connection hiveConn;
+    static FileSystem hdfs;
+    static int objectCounter;
+    static int counterThreshold;
+    static long interval;
+//    static ArrayList<Transaction> transactionArrayList;
+    List<Transaction> transactionArrayList;
+    static String uuid;
+    static String dst;
+    static Path dstPath;
+    static FSDataOutputStream outputStream;
+    Thread t;
+
+//    long currentMilli;
+//    long startMilli;
+//    Object lock;
+//    Thread t;
+
+
+    public HiveSinkBatch(int counterThreshold, long interval) {
+        this.counterThreshold = counterThreshold;
+        this.interval = interval;
+    }
 
 
     @Override
@@ -39,45 +49,51 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
         hiveConn = GetConnection.getHiveConnection();
         hdfs = GetConnection.getHDFSFileSystem();
         objectCounter = 0;
-        transactionArrayList = new ArrayList<Transaction>();
-        interval = 45 * 1000;  // 要么40秒
-        counterThreshold = 500;  // 要么batch数据达到500条
-        startMilli = System.currentTimeMillis();
+        transactionArrayList = Collections.synchronizedList(new ArrayList<Transaction>());
+//         = Collections.synchronizedList(new ArrayList<String>());
+//        interval = 45 * 1000;  // 要么40秒
+//        counterThreshold = 500;  // 要么batch数据达到500条
+//        startMilli = System.currentTimeMillis();
+//        lock = new Object();
+        t = new Thread(new WriteToHDFS(transactionArrayList, interval));
+        t.start();
     }
+
+
+    @Override
+    public void invoke(Transaction transaction, Context context) throws IOException, SQLException, InterruptedException {
+        transactionArrayList.add(transaction);
+
+        objectCounter += 1;
+//        currentMilli = System.currentTimeMillis() - startMilli;
+
+        if(objectCounter >= counterThreshold){
+//            System.out.println("触发batch写入 : " + objectCounter + "条数据");
+            t.interrupt();
+
+//            uuid = UUID.randomUUID().toString().replaceAll("-", "");
+//            dst = "/hive/"+ uuid + ".txt";
+//            WriteToHDFS.writeToHDFS(transactionArrayList, lock, hdfs, hiveConn, dst, dstPath, outputStream);
+//            NotifyHiveToLoad.load(dst, hiveConn);
+//            objectCounter = 0;
+//            startMilli = System.currentTimeMillis();
+//            transactionArrayList.clear();
+        }
+    }
+
 
     @Override
     public void close() throws Exception {
         super.close();
         System.out.println("closeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-        if (outputStream != null) {
-            outputStream.close();
-        }
+//        if (outputStream != null) {
+//            outputStream.close();
+//        }
         if (hiveConn != null) {
             hiveConn.close();
         }
         if (hdfs != null) {
             hdfs.close();
-        }
-    }
-
-    @Override
-    public void invoke(Transaction transaction, Context context) throws IOException, SQLException, InterruptedException {
-        transactionArrayList.add(transaction);
-        objectCounter += 1;
-        currentMilli = System.currentTimeMillis() - startMilli;
-        if(objectCounter >= counterThreshold || currentMilli >= interval ){
-            if (objectCounter >= counterThreshold){
-                System.out.println("触发batch写入 : " + objectCounter + "条数据");
-            } else{
-                System.out.println("触发batch写入 : " + currentMilli + "毫秒");
-            }
-            uuid = UUID.randomUUID().toString().replaceAll("-", "");
-            dst = "/hive/"+ uuid + ".txt";
-            WriteToHDFS.writeToHDFS(transactionArrayList, hdfs, hiveConn, dst, dstPath, outputStream);
-            NotifyHiveToLoad.load(dst, hiveConn);
-            objectCounter = 0;
-            startMilli = System.currentTimeMillis();
-            transactionArrayList.clear();
         }
     }
 
