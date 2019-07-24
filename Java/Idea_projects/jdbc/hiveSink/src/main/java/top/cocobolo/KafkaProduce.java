@@ -22,8 +22,8 @@ public class KafkaProduce {
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         KafkaProducer producer = new KafkaProducer<String, String>(props);
-        int totalTime = 40;
-        int totalQuantity = 980;
+        int totalTime = 5;
+        int totalQuantity = 480;
         int shouldSleep = (int)(totalTime * 1000 / totalQuantity);
         int produceCounter = 0;
         while(produceCounter <= totalQuantity) {

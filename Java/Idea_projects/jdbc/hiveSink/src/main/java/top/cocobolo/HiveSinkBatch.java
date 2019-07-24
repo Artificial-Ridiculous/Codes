@@ -23,11 +23,14 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
     static int counterThreshold;
     static long interval;
 //    static ArrayList<Transaction> transactionArrayList;
-    List<Transaction> transactionArrayList;
+    ArrayList<Transaction> transactionArrayList;
     static String uuid;
     static String dst;
     static Path dstPath;
     static FSDataOutputStream outputStream;
+    static boolean batchSatisfied;
+    static boolean intervalSatisfied;
+    static Object lock;
     Thread t;
 
 //    long currentMilli;
@@ -39,6 +42,8 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
     public HiveSinkBatch(int counterThreshold, long interval) {
         this.counterThreshold = counterThreshold;
         this.interval = interval;
+        batchSatisfied = false;
+        batchSatisfied = false;
     }
 
 
@@ -49,27 +54,35 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
         hiveConn = GetConnection.getHiveConnection();
         hdfs = GetConnection.getHDFSFileSystem();
         objectCounter = 0;
-        transactionArrayList = Collections.synchronizedList(new ArrayList<Transaction>());
+        transactionArrayList = new ArrayList<>();
 //         = Collections.synchronizedList(new ArrayList<String>());
 //        interval = 45 * 1000;  // 要么40秒
 //        counterThreshold = 500;  // 要么batch数据达到500条
 //        startMilli = System.currentTimeMillis();
 //        lock = new Object();
-        t = new Thread(new WriteToHDFS(transactionArrayList, interval));
+        t = new Thread(new WriteToHDFS(transactionArrayList, interval), "write线程");
         t.start();
     }
 
 
     @Override
     public void invoke(Transaction transaction, Context context) throws IOException, SQLException, InterruptedException {
-        transactionArrayList.add(transaction);
-
-        objectCounter += 1;
+        synchronized (lock){
+            transactionArrayList.add(transaction);
+            objectCounter += 1;
+            if(objectCounter >= counterThreshold){
+                lock.notifyAll();
+            }
+//            transactionArrayList.wait();
+//            transactionArrayList.add(transaction);
+//            objectCounter += 1;
+//            notifyAll();
+        }
 //        currentMilli = System.currentTimeMillis() - startMilli;
 
-        if(objectCounter >= counterThreshold){
+//        if(objectCounter >= counterThreshold){
 //            System.out.println("触发batch写入 : " + objectCounter + "条数据");
-            t.interrupt();
+//            t.interrupt();
 
 //            uuid = UUID.randomUUID().toString().replaceAll("-", "");
 //            dst = "/hive/"+ uuid + ".txt";
@@ -78,7 +91,7 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
 //            objectCounter = 0;
 //            startMilli = System.currentTimeMillis();
 //            transactionArrayList.clear();
-        }
+
     }
 
 
