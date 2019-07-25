@@ -8,7 +8,7 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import java.util.Properties;
 
 public class Main {
-    private static final long interval = 30 * 1000;
+    private static final long interval = 10 * 1000;
     private static final int countThreshold = 500;
 
 

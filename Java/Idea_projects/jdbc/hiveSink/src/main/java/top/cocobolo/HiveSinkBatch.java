@@ -23,7 +23,7 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
     static int counterThreshold;
     static long interval;
 //    static ArrayList<Transaction> transactionArrayList;
-    ArrayList<Transaction> transactionArrayList;
+    List<Transaction> transactionArrayList;
     static String uuid;
     static String dst;
     static Path dstPath;
@@ -54,12 +54,12 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
         hiveConn = GetConnection.getHiveConnection();
         hdfs = GetConnection.getHDFSFileSystem();
         objectCounter = 0;
-        transactionArrayList = new ArrayList<>();
+        transactionArrayList = Collections.synchronizedList(new ArrayList<>());
 //         = Collections.synchronizedList(new ArrayList<String>());
 //        interval = 45 * 1000;  // 要么40秒
 //        counterThreshold = 500;  // 要么batch数据达到500条
 //        startMilli = System.currentTimeMillis();
-//        lock = new Object();
+        lock = new Object();
         t = new Thread(new WriteToHDFS(transactionArrayList, interval), "write线程");
         t.start();
     }
@@ -67,17 +67,20 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
 
     @Override
     public void invoke(Transaction transaction, Context context) throws IOException, SQLException, InterruptedException {
-        synchronized (lock){
+        synchronized (transactionArrayList){
             transactionArrayList.add(transaction);
             objectCounter += 1;
-            if(objectCounter >= counterThreshold){
-                lock.notifyAll();
+            if(objectCounter >= counterThreshold) {
+                transactionArrayList.notify();
+                transactionArrayList.wait();
             }
+        }
+
 //            transactionArrayList.wait();
 //            transactionArrayList.add(transaction);
 //            objectCounter += 1;
 //            notifyAll();
-        }
+
 //        currentMilli = System.currentTimeMillis() - startMilli;
 
 //        if(objectCounter >= counterThreshold){

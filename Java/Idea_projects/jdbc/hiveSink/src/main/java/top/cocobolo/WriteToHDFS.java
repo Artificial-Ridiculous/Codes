@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,13 +24,13 @@ public class WriteToHDFS implements Runnable {
     //    public long interval = 10 * 1000;
 //    public boolean batchSatisfied = false;
 //    public Object lock;
-    private ArrayList<Transaction> transactionArrayList;
+    private List<Transaction> transactionArrayList;
     private long interval;
     private long startTime;
     private long currentTime;
 
 
-    public WriteToHDFS(ArrayList<Transaction> transactionArrayList, long interval) {
+    public WriteToHDFS(List<Transaction> transactionArrayList, long interval) {
         this.transactionArrayList = transactionArrayList;
         this.interval = interval;
         startTime = System.currentTimeMillis();
@@ -69,7 +70,7 @@ public class WriteToHDFS implements Runnable {
     }
 
 
-    public byte[] turnArrayListToBytes(ArrayList<Transaction> list) {
+    public byte[] turnArrayListToBytes(List<Transaction> list) {
         StringBuilder sb = new StringBuilder();
         String rowDelimiter = "\001";
         int rowDelimiterLength = 4;
@@ -95,7 +96,7 @@ public class WriteToHDFS implements Runnable {
     }
 
     public static void main(String[] args) {
-        ArrayList<Transaction> al = new ArrayList<Transaction>();
+        List<Transaction> al = Collections.synchronizedList(new ArrayList<>());
         for (int i = 0; i < 3; i++) {
             al.add(Transaction.getRandomTransaction());
         }
@@ -124,7 +125,29 @@ public class WriteToHDFS implements Runnable {
 
     @Override
     public void run() {
-//        while(true){
+        synchronized (transactionArrayList){
+            while(true){
+                try {
+                    transactionArrayList.wait(interval);
+                    // 走到这一步 要么是interval到了 要么是被notify了
+                    if(objectCounter >= counterThreshold){
+                        System.out.println("计数器触发");
+                    }else {
+                        System.out.println("时间间隔触发");
+                    }
+                    if(objectCounter > 1){
+                        writeToHDFS();
+                    }
+//                    writeToHDFS();
+                    transactionArrayList.notify();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        //        while(true){
 //            try {
 //                Thread.sleep(interval);
 //                // interval
@@ -146,15 +169,7 @@ public class WriteToHDFS implements Runnable {
 //            }
 //        }
 
-        synchronized (lock) {
-            while(true){
-                try {
-                    lock.wait(interval);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 }
+
 
