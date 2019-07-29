@@ -22,11 +22,11 @@ public class KafkaProduce {
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         KafkaProducer producer = new KafkaProducer<String, String>(props);
-        int totalTime = 5;
-        int totalQuantity = 300;
+        int totalTime = 10;
+        int totalQuantity = 20;
         int shouldSleep = (int)(totalTime * 1000 / totalQuantity);
         int produceCounter = 0;
-        while(produceCounter <= totalQuantity) {
+        while(produceCounter < totalQuantity) {
             Transaction transaction = Transaction.getRandomTransaction();
             ProducerRecord record = new ProducerRecord<String, String>(topic, null, null, JSON.toJSONString(transaction));
             producer.send(record);

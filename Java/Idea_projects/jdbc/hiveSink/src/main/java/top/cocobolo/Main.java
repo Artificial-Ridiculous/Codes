@@ -9,7 +9,7 @@ import java.util.Properties;
 
 public class Main {
     private static final long interval = 10 * 1000;
-    private static final int countThreshold = 500;
+    private static final int countThreshold = 10;
 
 
     public static void main(String[] args) throws Exception {
