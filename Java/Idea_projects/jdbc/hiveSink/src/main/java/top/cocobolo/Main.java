@@ -8,8 +8,8 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import java.util.Properties;
 
 public class Main {
-    private static final long interval = 30 * 1000;
-    private static final int countThreshold = 500;
+    private static final long interval = 10 * 1000;
+    private static final int countThreshold = 10;
 
 
     public static void main(String[] args) throws Exception {
@@ -35,7 +35,7 @@ public class Main {
         )
             .setParallelism(1)
             .map(string -> JSON.parseObject(string, Transaction.class))
-            .addSink(new HiveSinkBatch(countThreshold, interval)).setParallelism(1); //数据 sink 到 mysql
+            .addSink(new HiveSinkBatch(countThreshold, interval)).setParallelism(2); //数据 sink 到 mysql
 
         env.execute("Flink add sink");
     }
