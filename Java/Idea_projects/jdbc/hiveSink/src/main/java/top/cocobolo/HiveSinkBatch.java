@@ -22,16 +22,16 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
     static int objectCounter;
     static int counterThreshold;
     static long interval;
-//    static ArrayList<Transaction> transactionArrayList;
     List<Transaction> transactionArrayList;
     static String uuid;
     static String dst;
     static Path dstPath;
     static FSDataOutputStream outputStream;
-    static boolean batchSatisfied;
-    static boolean intervalSatisfied;
-    static Object lock;
     Thread t;
+//    static boolean batchSatisfied;
+//    static boolean intervalSatisfied;
+//    static Object lock;
+
 
 //    long currentMilli;
 //    long startMilli;
@@ -42,8 +42,8 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
     public HiveSinkBatch(int counterThreshold, long interval) {
         this.counterThreshold = counterThreshold;
         this.interval = interval;
-        batchSatisfied = false;
-        batchSatisfied = false;
+//        batchSatisfied = false;
+//        batchSatisfied = false;
     }
 
 
@@ -59,7 +59,7 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
 //        interval = 45 * 1000;  // 要么40秒
 //        counterThreshold = 500;  // 要么batch数据达到500条
 //        startMilli = System.currentTimeMillis();
-        lock = new Object();
+//        lock = new Object();
         t = new Thread(new WriteToHDFS(transactionArrayList, interval), "write线程");
         t.start();
     }

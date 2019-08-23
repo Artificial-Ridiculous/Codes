@@ -33,7 +33,7 @@ public class WriteToHDFS implements Runnable {
     public WriteToHDFS(List<Transaction> transactionArrayList, long interval) {
         this.transactionArrayList = transactionArrayList;
         this.interval = interval;
-        startTime = System.currentTimeMillis();
+//        startTime = System.currentTimeMillis();
     }
 
 //    public static void writeToHDFS(ArrayList<Transaction> list, FileSystem hdfs, Connection hiveConn, String dst, Path dstPath, FSDataOutputStream outputStream) throws IOException {
