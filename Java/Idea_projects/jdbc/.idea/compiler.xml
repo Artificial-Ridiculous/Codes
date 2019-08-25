@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="java" />
         <module name="hiveSink" />
+        <module name="scala" />
         <module name="jdbcMysqlTest" />
         <module name="multiThread" />
       </profile>
