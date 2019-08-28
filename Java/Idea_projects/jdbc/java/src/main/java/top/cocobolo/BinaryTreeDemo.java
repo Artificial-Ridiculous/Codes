@@ -7,24 +7,31 @@ public class BinaryTreeDemo {
         BinaryNode node2 = new BinaryNode(2);
         BinaryNode node3 = new BinaryNode(3);
         BinaryNode node4 = new BinaryNode(4);
+        BinaryNode node5 = new BinaryNode(5);
+        BinaryNode node6 = new BinaryNode(6);
         //先手动创建 后面递归创建二叉树
         root.setLeft(node2);
+        node2.setLeft(node5);
+        node2.setRight(node6);
         root.setRight(node3);
         node3.setRight(node4);
         binaryTree.setRoot(root);
         System.out.println("前序");
         binaryTree.preOrder();
-        System.out.println("中序");
-        binaryTree.inOrder();
-        System.out.println("后序");
-        binaryTree.postOrder();
-        System.out.println("查找val为5的node:");
-        BinaryNode res = binaryTree.preOrderSearch(5);
-        if(res == null){
-            System.out.println("未找到");
-        }else {
-            System.out.println("res = " + res);
-        }
+//        System.out.println("中序");
+//        binaryTree.inOrder();
+//        System.out.println("后序");
+//        binaryTree.postOrder();
+//        System.out.println("查找val为5的node:");
+//        BinaryNode res = binaryTree.preOrderSearch(5);
+//        if(res == null){
+//            System.out.println("未找到");
+//        }else {
+//            System.out.println("res = " + res);
+//        }
+        System.out.println("-----------");
+        binaryTree.preOrderDelete(6);
+        binaryTree.preOrder();
 
     }
 }
@@ -75,6 +82,28 @@ class BinaryTree{
 //        }
 //
 //    }
+
+    public void preOrderDelete(int val){
+        if(root==null){
+            System.out.println("空树,无法删除节点");
+        }else if(root.getVal()==val){
+            root = null;
+        }
+        if(root.getLeft()==null){
+            ;
+        }else if(root.getLeft().getVal()==val){
+            root.getLeft().setLeft(null);
+        }else{
+            root.getLeft().preOrderDelete(val);
+        }
+        if(root.getRight()==null){
+            ;
+        }else if(root.getRight().getVal()==val){
+            root.getRight().setLeft(null);
+        }else{
+            root.getRight().preOrderDelete(val);
+        }
+    }
 }
 
 
@@ -162,5 +191,23 @@ class BinaryNode{
             res = this.right.preOrderSearch(val);
         }
         return res;
+    }
+
+    public void preOrderDelete(int val){
+        if(this.left== null){
+            ;
+        }else if(this.left.val == val){
+            this.left=null;
+            return;
+        }else{
+            this.left.preOrderDelete(val);
+        }
+        if(this.right== null){
+            ;
+        }else if(this.right.val == val){
+            this.right=null;
+        }else{
+            this.right.preOrderDelete(val);
+        }
     }
 }
