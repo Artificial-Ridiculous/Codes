@@ -112,6 +112,10 @@ class BinaryNode{
     private BinaryNode left;
     private BinaryNode right;
 
+    public BinaryNode() {
+        ;
+    }
+
     public BinaryNode(int val) {
         this.val = val;
     }

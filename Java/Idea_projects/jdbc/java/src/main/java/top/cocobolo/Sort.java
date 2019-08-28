@@ -142,7 +142,7 @@ public class Sort {
     }
 
     private static void merge2SortedList(int[] l ,int left, int mid, int right, int[] tmp){
-        System.out.println("归并下标"+left+"到"+right);
+//        System.out.println("归并下标"+left+"到"+right);
         int index = left;
         int i = left;
         int j = mid+1;
@@ -176,25 +176,23 @@ public class Sort {
 
     public static void heapSort(int[] arr){
         System.out.println("堆排序");
-        // n个数,进行n-1次[构建大顶堆,并将堆顶元素与堆最后一个元素互换]的操作
-        // i是堆的最后一个元素下标
-
         int lastIndex = arr.length-1;
+
         //(arr.length-2)/2 是最后一个有子节点的节点下标
         for (int index = (arr.length-2)/2; index >= 0 ; index--) {
             // 构建初始的全局大顶堆  大概是nlogn的时间复杂度
-            heapify(arr,index,lastIndex);
-
+            adjustHeap(arr,index,lastIndex);
         }
+
         for(;lastIndex>=1;lastIndex--){
             // 将堆顶元素与堆最后一个元素互换
             swap(arr,0,lastIndex);
             // 将堆的size-1   重新构建大顶堆
             //大约logn的时间复杂度
-            heapify(arr,0,lastIndex-1);
+            adjustHeap(arr,0,lastIndex-1);
         }
     }
-    private static void heapify(int[] arr,int root,int lastIndex){ // 根据last,调整使之成为大顶堆
+    private static void adjustHeap(int[] arr,int root,int lastIndex){ // 根据last,调整使之成为大顶堆
         int current = root;
         int left = 2*current+1;
         int right = 2*current+2;
@@ -208,7 +206,7 @@ public class Sort {
                 //交换
                 swap(arr,left,current);
                 //交换后要重新以左孩子为起点 向下adjust堆
-                heapify(arr,left,lastIndex);
+                adjustHeap(arr,left,lastIndex);
             }
         //既有左孩子又有右孩子
         }else{
@@ -218,14 +216,14 @@ public class Sort {
                 if(arr[right]>arr[current]){
                     swap(arr,right,current);
                     //交换后要重新以右孩子为起点 向下adjust堆
-                    heapify(arr,right,lastIndex);
+                    adjustHeap(arr,right,lastIndex);
                 }
             }else{
                 if(arr[left]>arr[current]){
                     //如果右孩子大 再跟current比
                     swap(arr,left,current);
                     //交换后要重新以左孩子为起点 向下adjust堆
-                    heapify(arr,left,lastIndex);
+                    adjustHeap(arr,left,lastIndex);
                 }
             }
         }
@@ -251,6 +249,13 @@ public class Sort {
         return -1;
     }
 
+    public static void shuffle(int[] arr){
+        int n = arr.length;
+        for (int i = 0; i < n; i++) {
+            swap(arr,i,(int)(Math.random()*n));
+        }
+    }
+
     public static void main(String[] args) {
         //排序800w个[0,800w]的数据
         //用堆排序或快排大约4s左右
@@ -273,8 +278,9 @@ public class Sort {
         long usedTime;
         int j;
         int k;
-
-        for (k = 0; k < 3; k++) {
+        // 数据无序的情况下:
+        System.out.println("数据有序的情况下");
+        for (k = 0; k < 4; k++) {
             if(k==0){
                 for (j = 0; j < 8000000; j++) {
 //                    arr[j] = (int)(Math.random()*9999999);
@@ -286,11 +292,11 @@ public class Sort {
                 usedTime = (endTime-startTime);
 
                 System.out.println("堆排序800w个元素耗时"+usedTime+"ms");
-                int[] heapRes = java.util.Arrays.copyOf(arr,100);
-                System.out.println("arr="+ Arrays.toString(heapRes));
+                int[] heapRes = java.util.Arrays.copyOf(arr,20);
+                System.out.println("arr="+ Arrays.toString(heapRes)+"省略以下700w+个数据..");
                 System.out.println("----------");
             }else if(k==1){
-                for (j = 0; j < 8000000; j++) {
+                for (j = 0; j < 800000; j++) {
                     arr[j] = (int)(Math.random()*9999999);
 //                    arr[j] = j;
                 }
@@ -299,10 +305,10 @@ public class Sort {
                 endTime =  System.currentTimeMillis();
                 usedTime = (endTime-startTime);
                 System.out.println("快速排序800w个元素耗时"+usedTime+"ms");
-                int[] fastRes = java.util.Arrays.copyOf(arr,100);
-                System.out.println("arr="+ Arrays.toString(fastRes));
+                int[] fastRes = java.util.Arrays.copyOf(arr,20);
+                System.out.println("arr="+ Arrays.toString(fastRes)+"省略以下700w+个数据..");
                 System.out.println("----------");
-            }else{
+            }else if (k==2){
                 for (j = 0; j < 8000000; j++) {
 //                    arr[j] = (int)(Math.random()*9999999);
                     arr[j] = j;
@@ -312,9 +318,23 @@ public class Sort {
                 endTime =  System.currentTimeMillis();
                 usedTime = (endTime-startTime);
                 System.out.println("shell排序800w个元素耗时"+usedTime+"ms");
-                int[] shellRes = java.util.Arrays.copyOf(arr,100);
-                System.out.println("arr="+ Arrays.toString(shellRes));
+                int[] shellRes = java.util.Arrays.copyOf(arr,20);
+                System.out.println("arr="+ Arrays.toString(shellRes)+"省略以下700w+个数据..");
+                System.out.println("----------");
 
+            }
+            else{
+                for (j = 0; j < 8000000; j++) {
+//                    arr[j] = (int)(Math.random()*9999999);
+                    arr[j] = j;
+                }
+                startTime =  System.currentTimeMillis();
+                mergeSort(arr);
+                endTime =  System.currentTimeMillis();
+                usedTime = (endTime-startTime);
+                System.out.println("归并排序800w个元素耗时"+usedTime+"ms");
+                int[] mergeRes = java.util.Arrays.copyOf(arr,20);
+                System.out.println("arr="+ Arrays.toString(mergeRes)+"省略以下700w+个数据..");
             }
         }
     }
