@@ -5,24 +5,43 @@ import top.cocobolo.Sort;
 
 public class BinarySearchTreeDemo {
     public static void main(String[] args) {
-        int[] arr = {7, 3, 10, 12, 5, 1, 9};
-        System.out.println("插入顺序为"+Arrays.toString(arr));
+        long startTime;
+        long endTime;
+        long usedTime;
+
         BinarySearchTree bst = new BinarySearchTree();
-        for (int i = 0; i < arr.length; i++) {
+        int arr[]  = new int[8000000];
+        for (int i = 0; i < 8000000; i++) {
+            arr[i] = i;
+        }
+
+        Sort.shuffle(arr);
+        int[] insertOrder = java.util.Arrays.copyOf(arr,10);
+        System.out.println("插入顺序为"+Arrays.toString(insertOrder)+"省略以下7999990个数据..");
+
+        startTime =  System.currentTimeMillis();
+        for (int i = 0; i < 8000000; i++) {
             bst.add(new BinaryNode(arr[i]));
         }
-        bst.inOrder();
-        System.out.println("-----");
+        endTime =  System.currentTimeMillis();
+
+        usedTime = (endTime-startTime);
+        System.out.println("向空BST中插入随机的800w个int节点耗时"+usedTime+"ms");
+        System.out.println("----------");
+
         Sort.shuffle(arr);
-//        int[] arr1 = {3, 9, 12, 1, 10, 5, 7};
-        System.out.println("删除顺序为"+Arrays.toString(arr));
-        System.out.println("-----");
-        for (int i = 0; i < arr.length; i++) {
+        int[] deleteOrder = java.util.Arrays.copyOf(arr,10);
+        System.out.println("插入顺序为"+Arrays.toString(deleteOrder)+"省略以下7999990个数据..");
+
+        startTime =  System.currentTimeMillis();
+        for (int i = 0; i < 8000000; i++) {
             bst.deleteNode(arr[i]);
-            bst.inOrder();
-            System.out.println("-----");
         }
-//        bst.inOrder();
+        endTime =  System.currentTimeMillis();
+
+        usedTime = (endTime-startTime);
+        System.out.println("从含有800w个int节点的BST中随机逐个删除所有节点"+usedTime+"ms");
+        bst.inOrder();
     }
 }
 
@@ -33,19 +52,20 @@ class BinarySearchTree {
         if (root == null) {
             root = node;
         } else {
-            if (node.getVal() < root.getVal()) {
-                if (root.getLeft() == null) {
-                    root.setLeft(node);
-                } else {
-                    root.getLeft().add(node);
-                }
-            } else {
-                if (root.getRight() == null) {
-                    root.setRight(node);
-                } else {
-                    root.getRight().add(node);
-                }
-            }
+            root.add(node);
+//            if (node.getVal() < root.getVal()) {
+//                if (root.getLeft() == null) {
+//                    root.setLeft(node);
+//                } else {
+//                    root.getLeft().add(node);
+//                }
+//            } else {
+//                if (root.getRight() == null) {
+//                    root.setRight(node);
+//                } else {
+//                    root.getRight().add(node);
+//                }
+//            }
         }
     }
 
@@ -140,7 +160,7 @@ class BinarySearchTree {
                         root=target.getRight();
                         return target;
                     }
-                    if (parent.getLeft().getVal() == val) {
+                    if (parent.getLeft()!=null && parent.getLeft().getVal() == val) {
                         //待删除节点是其父节点的左节点
                         //则父节点的左节点替换为target的右子树
                         parent.setLeft(target.getRight());
@@ -158,7 +178,7 @@ class BinarySearchTree {
                         root=target.getLeft();
                         return target;
                     }
-                    if (parent.getLeft().getVal() == val) {
+                    if (parent.getLeft()!=null && parent.getLeft().getVal() == val) {
                         //待删除节点是其父节点的左节点
                         //则父节点的左节点替换为target的右子树
                         parent.setLeft(target.getLeft());
