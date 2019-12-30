@@ -60,9 +60,9 @@ public class WriteToHDFS implements Runnable {
             NotifyHiveToLoad.load(dst, hiveConn);
             System.out.println("导入Hive成功");
         } catch (SQLException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         } catch (IOException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
         objectCounter = 0;
         transactionArrayList.clear();
@@ -71,7 +71,7 @@ public class WriteToHDFS implements Runnable {
 
 
     public byte[] turnArrayListToBytes(List<Transaction> list) {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         String rowDelimiter = "\001";
         int rowDelimiterLength = 4;
         String lineDelimiter = "\n";
@@ -139,7 +139,7 @@ public class WriteToHDFS implements Runnable {
                         writeToHDFS();
                     }
 //                    writeToHDFS();
-                    transactionArrayList.notify();
+                    transactionArrayList.notifyAll();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
