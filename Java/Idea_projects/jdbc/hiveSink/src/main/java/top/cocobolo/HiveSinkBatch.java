@@ -32,6 +32,10 @@ public class HiveSinkBatch extends RichSinkFunction<Transaction> {
     boolean intervalSatisfied;
     Object lock;
     Thread t;
+//    static boolean batchSatisfied;
+//    static boolean intervalSatisfied;
+//    static Object lock;
+
 
 //    long currentMilli;
 //    long startMilli;

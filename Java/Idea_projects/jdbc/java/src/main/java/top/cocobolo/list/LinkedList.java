@@ -1,4 +1,4 @@
-package top.cocobolo;
+package top.cocobolo.list;
 
 /**
  * @auther lz
