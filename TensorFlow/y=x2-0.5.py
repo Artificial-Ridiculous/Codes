@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
             prediction_value = sess.run(prediction, feed_dict={xs: x_data})
             lines = ax.plot(x_data, prediction_value, 'r-', lw=5)
-            ###### ax.lines.remove(lines[0])
+            # ax.lines.remove(lines[0])
             # plt.pause(0.1)
             result = sess.run(merged, feed_dict={xs: x_data, ys: y_data})
             writer.add_summary(result, i)
