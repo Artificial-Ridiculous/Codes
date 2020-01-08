@@ -6,11 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="multiThread" />
-        <module name="hiveSink" />
-        <module name="scala" />
-        <module name="jdbcMysqlTest" />
+        <module name="flink" />
         <module name="java" />
+        <module name="Hbase_2.2_test" />
+        <module name="scala" />
+        <module name="hiveSink" />
+        <module name="jdbcMysqlTest" />
+        <module name="multiThread" />
       </profile>
     </annotationProcessing>
   </component>

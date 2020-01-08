@@ -14,6 +14,7 @@
         <module>multiThread</module>
         <module>java</module>
         <module>scala</module>
+        <module>Hbase_2.2_test</module>
     </modules>
 
 
