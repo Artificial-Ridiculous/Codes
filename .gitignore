@@ -1,2 +1,6 @@
 
 *.TF-LZ-20180314
+.DS_Store
+.idea
+target
+*.class
